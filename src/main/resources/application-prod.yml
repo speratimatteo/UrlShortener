@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/shortenerdb
+    username: msperati
+    password: valencia25
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      # Usa 'validate' per garantire che lo schema del DB esista e corrisponda
+      # all'Entity, ma NON lo modificherà.
+      ddl-auto: validate
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  # Redis locale (Assumiamo che tu abbia un'istanza Redis locale o Docker)
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+logging:
+  level:
+    com.yourcompany.urlshortener: INFO # Livello di log standard per la produzione
