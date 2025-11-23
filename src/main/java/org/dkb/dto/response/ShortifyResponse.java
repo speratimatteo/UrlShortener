@@ -9,16 +9,12 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class ShortUrlResponse {
+public class ShortifyResponse {
 
     @Schema(description = "The unique short code generated for the URL.", example = "aBcD1eF")
     private String shortCode;
 
-    @Schema(description = "The full shortened URL (BASE_URL + shortCode).",
-            example = "https://yourservice.com/aBcD1eF")
-    private String shortUrl;
-
     @Schema(description = "The original long URL.",
-            example = "https://example.com/very/long/path?id=123&data=abc")
+            example = "http://example.com/very/long/path?id=123&data=abc")
     private String longUrl;
 }

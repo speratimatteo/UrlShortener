@@ -34,19 +34,4 @@ public class Base62ConverterService {
         }
         return sb.toString();
     }
-
-    /**
-     * Decodes a Base62 string (the short code) back into a long integer ID.
-     * This is generally not needed for the core logic but is useful for validation.
-     *
-     * @param shortCode The Base62 short code string.
-     * @return The original long integer ID.
-     */
-    public long decode(String shortCode) {
-        long id = 0;
-        for (int i = 0; i < shortCode.length(); i++) {
-            id = id * BASE + BASE62_CHARS.indexOf(shortCode.charAt(i));
-        }
-        return id;
-    }
 }

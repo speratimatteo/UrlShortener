@@ -1,35 +1,19 @@
+server:
+  servlet:
+    context-path: /dev
+
 spring:
-  # Database H2 configuration in-memory
   datasource:
-    url: jdbc:h2:mem:urlshortenerdb # Database H2 in-memory
-    driverClassName: org.h2.Driver
-    username: sa
-    password: password
-    platform: h2
+    url: jdbc:postgresql://${DB_HOST:localhost}:5432/shortenerdb
+    username: ${DB_USER:shorteneruser}
+    password: ${DB_PASSWORD:shortenerpassword}
+    driver-class-name: org.postgresql.Driver
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
 
-  # JPA Configuration for H2
   jpa:
-    # CRUCIAL: Tells Spring where to find entities
-    packages-to-scan: org.dkb
-
     hibernate:
-      # create-drop -> necessary to re-create table at each restart
-      ddl-auto: create-drop
-      database-platform: org.hibernate.dialect.H2Dialect
-
-    # Hibernate additional properties
-    properties:
-      hibernate.dialect.storage_engine: innodb
-
-  # Redis local configuration
-  data:
-    redis:
-      host: localhost
-      port: 6379
-
-logging:
-  level:
-    # Log level for package
-    org.dkb: DEBUG
-    org.springframework.web: INFO
-    org.hibernate: INFO
+      ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true

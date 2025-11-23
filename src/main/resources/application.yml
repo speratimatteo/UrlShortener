@@ -1,32 +1,22 @@
 server:
   port: 8080
-
-app:
-  base-url: http://localhost:8080/
+  error:
+    include-message: always
 
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
   api-docs:
-    path: /v3/api-docs
+    path: /shortify/api-docs
   info:
-    title: URL Shortener MVP API
+    title: Shortify API
     version: v1.0.0
-    description: API per accorciare URL.
+    description: API to shorten URL.
 
 spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/shortenerdb
-    username: shorteneruser
-    password: shortenerpassword
-    driver-class-name: org.postgresql.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: false
-
-  # Redis disabled (re-enable it if needed)
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  # TODO: comment the lines below to enable redis
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration

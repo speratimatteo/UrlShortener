@@ -2,6 +2,8 @@ package org.dkb.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.dkb.entity.ShortenedUrl;
 import org.dkb.repository.ShortenedUrlRepository;
 import org.springframework.cache.annotation.Cacheable;
@@ -17,15 +19,13 @@ import java.util.Optional;
  * Core business logic service for URL shortening and resolution.
  * Handles database interaction, hash generation, and caching.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ShortenerService {
 
     private final ShortenedUrlRepository repository;
     private final Base62ConverterService converterService;
-
-    // The base URL of the service, defined in application.yml (e.g., https://yourservice.com/)
-    // This could be injected using @Value("${app.base-url}") if needed for response DTOs.
 
     /**
      * Shortens a given long URL.
@@ -39,13 +39,16 @@ public class ShortenerService {
         try {
             new URL(longUrl); // delle volte URL permette invalidi, ma per MVP ok
         } catch (MalformedURLException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid URL");
+            String errorMsg = "Invalid URL: " + longUrl;
+            log.info(errorMsg);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorMsg);
         }
 
         // 1. Check if the URL is already shortened (prevent duplicates)
         Optional<ShortenedUrl> existing = repository.findByLongUrl(longUrl);
         if (existing.isPresent()) {
             // Return the existing short code
+            log.info("Record already existing for url " + longUrl);
             return existing.get().getShortCode();
         }
 
@@ -59,8 +62,8 @@ public class ShortenerService {
         ShortenedUrl savedUrl = repository.save(newUrl);
         Long uniqueId = savedUrl.getId();
 
-        // 3. Generate the short code using the unique ID
-        String shortCode = converterService.encode(uniqueId);
+        // 3. Generate the short code using the unique ID and a random alphanumeric String
+        String shortCode = converterService.encode(uniqueId) + RandomStringUtils.randomAlphanumeric(4);
 
         // 4. Update the record with the generated short code
         savedUrl.setShortCode(shortCode);
@@ -88,6 +91,13 @@ public class ShortenerService {
         Optional<ShortenedUrl> found = repository.findByShortCode(shortCode);
 
         // 3. If found in DB, Spring automatically puts the result in cache for next time (Cache Hit).
-        return found.map(ShortenedUrl::getLongUrl).orElse(null);
+        // Otherwise, throw a ResponseStatusException 404
+        if (found.isPresent()) {
+            return found.get().getLongUrl();
+        } else {
+            String errorMsg = "URL not found for code: " + shortCode;
+            log.info(errorMsg);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "URL not found for code: " + shortCode);
+        }
     }
 }

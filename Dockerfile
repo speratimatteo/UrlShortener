@@ -28,11 +28,5 @@ COPY --from=builder /app/target/*.jar app.jar
 # Esponi porta Spring Boot
 EXPOSE 8080
 
-# Profilo dev di default
-ENV SPRING_PROFILES_ACTIVE=dev
-
-# Variabili opzionali (puoi cambiare facilmente senza rebuild)
-ENV APP_BASE_URL=http://localhost:8080/
-
 # Comando di avvio
 ENTRYPOINT ["java", "-jar", "app.jar"]
