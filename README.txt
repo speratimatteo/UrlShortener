@@ -1,18 +1,18 @@
 ##################################################### DESCRIPTION #########################################################################
 
-Simple api to shorten a URL and retrieve from DB the shrinked URL.
+Simple api to shorten a URL and retrieve from DB the shortened URL.
 Includes 3 endpoints:
 
-1) /shorten ------------------> returns a ShortifyResponse, an object with the shortCode and the full URL to which is associated.
-                                If the URL has already be shrinked before, returns the one saved on DB.
-                                Otherwise, create a new record and saves it.
+1) POST /shorten ---------------> returns a ShortifyResponse, an object with the shortCode and the full URL to which is associated.
+                                  If the URL has already been shortened before, returns the one saved on DB.
+                                  Otherwise, create a new record and saves it.
 
-2) /getFullUrl/{shortCode} ---> also returns a ShortifyResponse, containing the full URL associated to the shortCode passed as input.
-                                Being a (potentially) high-volume API, is cached with Redis.
+2) GET /getFullUrl/{shortCode} -> also returns a ShortifyResponse, containing the full URL associated to the shortCode passed as input.
+                                  Being a (potentially) high-volume API, is cached with Redis.
 
-3) /redirect/{shortCode} -----> rather than just returning a ShortifyResponse like the API above, redirects the user the full URL associated to
-                                the shortCode in input.
-                                Also cached with Redis.
+3) GET /redirect/{shortCode} ---> rather than just returning a ShortifyResponse like the API above, redirects the user the full URL associated to
+                                  the shortCode in input.
+                                  Also cached with Redis.
 
 ######################################################## SWAGGER ##########################################################################
 
@@ -21,7 +21,7 @@ http://localhost:8080/dev/swagger-ui/index.html
 
 ######################################################## SET UP ###########################################################################
 
-Requires Docker desktop installed.
+Requires Docker Desktop installed.
 Here are the commands to stop, build and launch the application
 
 # SLOWER: stop, build and recreate all 3 components (api, db, redis). Quite slow
